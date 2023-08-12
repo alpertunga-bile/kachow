@@ -1,8 +1,8 @@
 from utilities.consts import default_model_name, cache_folder
 
-from transformers import AutoModelForCausalLM, AutoTokenizer, Pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, Pipeline, pipeline
 
-from optimum.pipelines import pipeline
+import optimum.pipelines
 from optimum.bettertransformer import BetterTransformer
 from optimum.onnxruntime import ORTOptimizer, ORTQuantizer, ORTModelForCausalLM
 from optimum.onnxruntime.configuration import (
@@ -16,7 +16,6 @@ from shutil import rmtree
 
 
 def optimize_and_quantize_onnx(model_path: str):
-
     # ----------------------------------------------------------------------------------------------
     # -- OPTIMIZE
 
@@ -73,18 +72,6 @@ def optimize_and_quantize_onnx(model_path: str):
     rmtree("tmp")
 
 
-def get_pipeline_onnx(model_name: str = default_model_name) -> Pipeline:
-
-    model = ORTModelForCausalLM.from_pretrained(model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-
-    pipe = pipeline(
-        "text-generation", model=model, tokenizer=tokenizer, accelerator="ort"
-    )
-
-    return pipe
-
-
 def get_tokenizer(model_name: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(
         model_name, cache_dir=f"{cache_folder}/tokenizers"
@@ -94,7 +81,7 @@ def get_tokenizer(model_name: str) -> AutoTokenizer:
     return tokenizer
 
 
-def get_model(model_name: str, use_sdp: bool = False):
+def get_model(model_name: str, use_sdp: bool = False) -> AutoModelForCausalLM:
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         device_map="auto",
@@ -107,17 +94,35 @@ def get_model(model_name: str, use_sdp: bool = False):
     return model
 
 
-def get_pipeline(
-    model_name: str = default_model_name, use_sdp: bool = False
-) -> Pipeline:
+def get_bettertransformer_pipeline(model_name: str = default_model_name) -> Pipeline:
     tokenizer = get_tokenizer(model_name)
-    model = get_model(model_name, use_sdp=use_sdp)
+    model = get_model(model_name)
 
-    pipe = pipeline(
+    pipe = optimum.pipelines.pipeline(
         "text-generation",
         model=model,
         tokenizer=tokenizer,
         accelerator="bettertransformer",
     )
+
+    return pipe
+
+
+def get_pipeline_onnx(model_name: str = default_model_name) -> Pipeline:
+    model = ORTModelForCausalLM.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+    pipe = optimum.pipelines.pipeline(
+        "text-generation", model=model, tokenizer=tokenizer, accelerator="ort"
+    )
+
+    return pipe
+
+
+def get_default_pipeline(model_name: str = default_model_name) -> Pipeline:
+    model = get_model(model_name)
+    tokenizer = get_tokenizer(model_name)
+
+    pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer)
 
     return pipe

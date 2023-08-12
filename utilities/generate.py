@@ -1,4 +1,8 @@
-from utilities.model import get_pipeline, get_pipeline_onnx
+from utilities.model import (
+    get_bettertransformer_pipeline,
+    get_pipeline_onnx,
+    get_default_pipeline,
+)
 from dataclasses import dataclass
 from utilities.utility import get_accelerator_type, get_variable_dictionary
 
@@ -25,18 +29,23 @@ def generate_text(
     input: str,
     model: str,
     args: GenerateArgs = GenerateArgs(),
+    is_accelerate: bool = True,
 ) -> str:
-    accelerator_type = get_accelerator_type(model)
+    pipe = None
 
-    if accelerator_type == "onnx":
-        pipe = pipe = get_pipeline_onnx(model_name=model)
-    elif accelerator_type == "bettertransformer":
-        pipe = get_pipeline(model_name=model, use_sdp=False)
+    if is_accelerate is False:
+        pipe = get_default_pipeline(model)
     else:
-        print(
-            "Cant define accelerator type by folder. Can't find .onnx file for onnx, .bin for bettertransformer"
-        )
-        exit(1)
+        accelerator_type = get_accelerator_type(model)
+
+        if accelerator_type == "onnx":
+            pipe = pipe = get_pipeline_onnx(model_name=model)
+        elif accelerator_type == "bettertransformer":
+            pipe = get_bettertransformer_pipeline(model_name=model, use_sdp=False)
+        else:
+            raise ValueError(
+                "Cant define accelerator type by folder. Can't find .onnx file for onnx, .bin for bettertransformer"
+            )
 
     args = get_variable_dictionary(args)
 

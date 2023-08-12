@@ -1,6 +1,5 @@
 from datasets import load_dataset, Dataset, DatasetDict
 from transformers import AutoTokenizer
-from utilities.consts import cache_folder
 
 
 def tokenize(

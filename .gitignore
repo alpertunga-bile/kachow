@@ -165,3 +165,4 @@ temp_model/
 temp_model_onnx/
 dataset.txt
 requirements.txt
+cache/
