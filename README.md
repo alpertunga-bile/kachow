@@ -1,7 +1,12 @@
 # kachow
 Small library for using [optimum package](https://github.com/huggingface/optimum) for text generation training and inference
 
-- Can use text file as dataset for training.
+## Features
+- Can use text file as dataset for training
+- Using [optimum package](https://github.com/huggingface/optimum) for optimizations
+- Convert your model to optimized and quantized ONNX model
+- Train your model with higher speeds
+- Generate text with optimizations
 
 ## Setup
 
