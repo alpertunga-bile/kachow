@@ -1,6 +1,20 @@
 # kachow
 Small library for using [optimum package](https://github.com/huggingface/optimum) for text generation training and inference
 
+- [kachow](#kachow)
+  - [Features](#features)
+  - [Setup](#setup)
+  - [Examples](#examples)
+    - [Generate](#generate)
+      - [Generate with transformers package](#generate-with-transformers-package)
+      - [Generate with optimum package using BetterTransformer and ONNX models](#generate-with-optimum-package-using-bettertransformer-and-onnx-models)
+    - [Train](#train)
+      - [Train with transformers package](#train-with-transformers-package)
+      - [Train with transformers package using BetterTransformer](#train-with-transformers-package-using-bettertransformer)
+      - [Train with optimum package using ONNX](#train-with-optimum-package-using-onnx)
+    - [Convert](#convert)
+      - [transformers model to ONNX model](#transformers-model-to-onnx-model)
+
 ## Features
 - Can use text file as dataset for training
 - Using [optimum package](https://github.com/huggingface/optimum) for optimizations
