@@ -19,9 +19,8 @@ def create_requirements_file() -> None:
         packages.add("triton\n")
 
     packages.add("optimum\n")
-    packages.add("optimum[onnxruntime]\n")
-    packages.add("optimum[onnxruntime-gpu]")
-    packages.add("optimum[onnxruntime-training]")
+    packages.add("optimum[onnxruntime-gpu]\n")
+    packages.add("optimum[onnxruntime-training]\n")
     packages.add(
         "torch torchvision --index-url https://download.pytorch.org/whl/cu118\n"
     )
