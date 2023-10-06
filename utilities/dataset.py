@@ -8,7 +8,7 @@ def tokenize(
     def tokenize_function(example):
         texts = example["text"]
         #texts = [case + "\n" for case in texts[:]]
-        return tokenizer(texts)
+        return tokenizer(texts, padding=True)
 
     tokenized_dataset = dataset.map(
         tokenize_function,
